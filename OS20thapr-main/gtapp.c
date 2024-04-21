@@ -199,15 +199,10 @@ int main(int argc, char *argv[])
     g_signal_connect(button, "clicked", G_CALLBACK(special_button_clicked), text_view);
     gtk_grid_attach(GTK_GRID(grid), button, 4, 4, 1, 1);
 
-    // Add special button for Brightness increase
-    button = gtk_button_new_with_label("BRT+");
+    // Add special button for Clearing text
+    button = gtk_button_new_with_label("CLR!");
     g_signal_connect(button, "clicked", G_CALLBACK(special_button_clicked), text_view);
     gtk_grid_attach(GTK_GRID(grid), button, 3, 2, 1, 1);
-
-    // Add special button for Brightness decrease
-    button = gtk_button_new_with_label("BRT-");
-    g_signal_connect(button, "clicked", G_CALLBACK(special_button_clicked), text_view);
-    gtk_grid_attach(GTK_GRID(grid), button, 3, 3, 1, 1);
 
     // Add backspace button
     GtkWidget *backspace_button = gtk_button_new_with_label("Backspace");

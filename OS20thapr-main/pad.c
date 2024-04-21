@@ -13,36 +13,6 @@ static int major_number;
 static char message[256] = {0};
 static short size_of_message;
 
-// Simulate decreasing brightness
-static void simulate_brightness_decrease(void) {
-    struct input_event ev;
-
-    // Create an input event for decreasing brightness
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_KEY;
-    ev.code = KEY_BRIGHTNESSDOWN; // Use the appropriate keycode for brightness decrease
-    ev.value = 1; // Press the key
-
-    // Send the key press event
-    input_event(input_allocate_device(), ev.type, ev.code, ev.value); // Press the key
-    input_sync(input_allocate_device()); // Sync the event
-}
-
-// Simulate decreasing brightness
-static void simulate_brightness_increase(void) {
-    struct input_event ev;
-
-    // Create an input event for decreasing brightness
-    memset(&ev, 0, sizeof(struct input_event));
-    ev.type = EV_KEY;
-    ev.code = KEY_BRIGHTNESSUP; // Use the appropriate keycode for brightness decrease
-    ev.value = 1; // Press the key
-
-    // Send the key press event
-    input_event(input_allocate_device(), ev.type, ev.code, ev.value); // Press the key
-    input_sync(input_allocate_device()); // Sync the event
-}
-
 // Read function; to be used by the script keypad_listener.sh
 static ssize_t virtual_keypad_read(struct file *file, char *buffer, size_t len, loff_t *offset) {
 
@@ -83,7 +53,7 @@ static ssize_t virtual_keypad_write(struct file *file, const char *buffer, size_
         // Append the user data into the file username.txt
         argv[0] = "/bin/bash";
         argv[1] = "-c";
-        argv[2] = kasprintf(GFP_KERNEL, "echo -n '%s' >> /home/yatharth/Downloads/kernelapp/username.txt", input + 4); // User data starts at 20th character
+        argv[2] = kasprintf(GFP_KERNEL, "echo -n '%s' >> username.txt", input + 4); // User data starts at 20th character
         argv[3] = NULL;
         call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
         kfree(argv[2]);
@@ -98,7 +68,7 @@ static ssize_t virtual_keypad_write(struct file *file, const char *buffer, size_
         // Append the user data into the file password.txt
         argv[0] = "/bin/bash";
         argv[1] = "-c";
-        argv[2] = kasprintf(GFP_KERNEL, "echo -n '%s' >> /home/yatharth/Downloads/kernelapp/password.txt", input + 4); // User data starts at 20th character
+        argv[2] = kasprintf(GFP_KERNEL, "echo -n '%s' >> password.txt", input + 4); // User data starts at 20th character
         argv[3] = NULL;
         call_usermodehelper(argv[0], argv, envp, UMH_WAIT_PROC);
         kfree(argv[2]); 
@@ -107,16 +77,6 @@ static ssize_t virtual_keypad_write(struct file *file, const char *buffer, size_
         printk(KERN_INFO "Password appended to file");
 
     } 
-    else if(input[0] == 'B' && input[3] == '-') {
-        strcpy(message, "BRT-");
-        printk(KERN_INFO "brightness decreasing");
-        simulate_brightness_decrease();
-    }
-    else if(input[0] == 'B' && input[3] == '+') {
-        strcpy(message, "BRT+");
-        printk(KERN_INFO "brightness increasing");
-        simulate_brightness_increase();
-    }
     // Case 3: Handled by keypadlistener.sh
     else {
 
